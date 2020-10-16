@@ -38,12 +38,12 @@ public class CameraControl : MonoBehaviour
         v3_Move.x = -c_controls.Ferret.MoveV2Forward.ReadValue<float>();
         v3_Move.z = -c_controls.Ferret.MoveV2Right.ReadValue<float>();
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
            
             v3_Move.y = 1f;
         }
-        else if(Input.GetButton("Fire3"))
+        else if(Input.GetKey(KeyCode.LeftControl))
         {
             v3_Move.y = -1f;
         }

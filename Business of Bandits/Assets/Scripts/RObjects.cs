@@ -1,0 +1,31 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class RObjects : MonoBehaviour
+{
+    public GameObject obj_Cube;
+    public GameObject obj_Sphere;
+    public GameObject obj_Cylinder;
+
+    public Factory s_factory;
+
+    // Start is called before the first frame update
+   
+    //Spawns the objects
+    public void SpawnCube()
+    {
+        s_factory.FactorySpawn(obj_Cube);
+    }
+    public void SpawnSphere()
+    {
+        s_factory.FactorySpawn(obj_Sphere);
+    }
+    public void SpawnCylinder()
+    {
+        s_factory.FactorySpawn(obj_Cylinder);
+    }
+
+    // Update is called once per frame
+
+}

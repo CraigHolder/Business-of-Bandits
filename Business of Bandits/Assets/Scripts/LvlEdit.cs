@@ -22,10 +22,6 @@ public class LvlEdit : MonoBehaviour
     private bool b_RotateY = false;
     private bool b_RotateZ = false;
 
-    public GameObject obj_Cube;
-    public GameObject obj_Sphere;
-    public GameObject obj_Cylinder;
-    
     private void Selected()
     {
         if(r_Selected != null)
@@ -99,20 +95,7 @@ public class LvlEdit : MonoBehaviour
     {
         b_RotateZ = true;
     }
-    //Spawns the objects
-    public void SpawnCube()
-    {
-        Instantiate(obj_Cube, new Vector3(0, 5, 0), Quaternion.identity);
-    }
-    public void SpawnSphere()
-    {
-        Instantiate(obj_Sphere, new Vector3(0,5,0), Quaternion.identity);
-    }
-    public void SpawnCylinder()
-    {
-        Instantiate(obj_Cylinder, new Vector3(0, 5, 0), Quaternion.identity);
-    }
-
+    
     //deletes currently selected object
     public void Delete()
     {
