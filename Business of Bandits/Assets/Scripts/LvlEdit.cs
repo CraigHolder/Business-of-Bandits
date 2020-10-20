@@ -7,20 +7,86 @@ using UnityEngine.InputSystem;
 
 public class LvlEdit : MonoBehaviour
 {
+    enum States
+    {
+        S_Rotating,
+        S_Moving,
+        S_Nothing
+    }
+
     //public LvlData Lvlscript;
     public Camera cam_MainCamera;
     public Transform obj_selected;
+    public Transform obj_backup;
     public Renderer r_Selected;
-    private bool b_increaseY = false;
-    private bool b_decreaseY = false;
-    private bool b_increaseX = false;
-    private bool b_decreaseX = false;
-    private bool b_increaseZ = false;
-    private bool b_decreaseZ = false;
 
-    private bool b_RotateX = false;
-    private bool b_RotateY = false;
-    private bool b_RotateZ = false;
+    private static LvlEdit s_Instance;
+    States e_currstate = States.S_Nothing;
+
+    public static LvlEdit Instance()
+    {
+        if (s_Instance == null)
+        {
+            s_Instance = new LvlEdit();
+        }
+            return s_Instance;
+    }
+       
+
+    public string str_previous;
+    public float f_previousval;
+
+    //public Command s_command;
+
+    //private bool b_increaseY = false;
+    //private bool b_decreaseY = false;
+    //private bool b_increaseX = false;
+    //private bool b_decreaseX = false;
+    //private bool b_increaseZ = false;
+    //private bool b_decreaseZ = false;
+
+    //private bool b_RotateX = false;
+    //private bool b_RotateY = false;
+    //private bool b_RotateZ = false;
+
+    private Command c_rotX;
+    private Command c_rotY;
+    private Command c_rotZ;
+
+    private Command c_del;
+
+    private Command c_incX;
+    private Command c_incY;
+    private Command c_incZ;
+
+    private Command c_decX;
+    private Command c_decY;
+    private Command c_decZ;
+
+    private Command c_undo;
+    private Command c_redo;
+
+    void Start()
+    {
+        c_rotX = new RotateXCommand();
+        c_rotY = new RotateYCommand();
+        c_rotZ = new RotateZCommand();
+
+        c_del = new DeleteCommand();
+
+        c_incX = new IncreaseXCommand();
+        c_incY = new IncreaseYCommand();
+        c_incZ = new IncreaseZCommand();
+
+        c_decX = new DecreaseXCommand();
+        c_decY = new DecreaseYCommand();
+        c_decZ = new DecreaseZCommand();
+
+
+        c_undo = new UndoCommand();
+        c_redo = new RedoCommand();
+    }
+
 
     private void Selected()
     {
@@ -36,107 +102,107 @@ public class LvlEdit : MonoBehaviour
             r_Selected = obj_selected.GetComponent<Renderer>();
             r_Selected.material.color = Color.green;
         }
+
     }
 
     void Update()
     {
-        
-        if (b_increaseY == true)
+        switch (e_currstate)
         {
-            obj_selected.Translate(0, 20 * Time.deltaTime, 0);
-        }
-        else if (b_decreaseY == true)
-        {
-            obj_selected.Translate(0, -20 * Time.deltaTime, 0);
-        }
-        else if (b_increaseX == true)
-        {
-            obj_selected.Translate(20 * Time.deltaTime, 0, 0);
-        }
-        else if (b_decreaseX == true)
-        {
-            obj_selected.Translate(-20 * Time.deltaTime, 0, 0);
-        }
-        else if (b_increaseZ == true)
-        {
-            obj_selected.Translate(0, 0, 20 * Time.deltaTime);
-        }
-        else if (b_decreaseZ == true)
-        {
-            obj_selected.Translate(0, 0, -20 * Time.deltaTime);
-        }
-        else if (b_RotateX == true)
-        {
-            obj_selected.Rotate(10 * Time.deltaTime, 0, 0);
-        }
-        else if (b_RotateY == true)
-        {
-            obj_selected.Rotate(0, 10 * Time.deltaTime, 0);
-        }
-        else if (b_RotateZ == true)
-        {
-            obj_selected.Rotate(0,0,10 * Time.deltaTime);
+            case States.S_Rotating:
+                r_Selected.material.color = Color.cyan;
+                break;
+            case States.S_Moving:
+                r_Selected.material.color = Color.blue;
+                break;
+            case States.S_Nothing:
+                r_Selected.material.color = Color.green;
+                break;
+
         }
         if (Input.GetMouseButtonDown(2))
         {
             Selected();
         }
     }
+
+    public void Undo()
+    {
+        c_undo.Execute(c_undo, obj_selected.gameObject);
+    }
+
+    public void Redo()
+    {
+        c_redo.Execute(c_redo, obj_selected.gameObject);
+    }
+
     //Rotates the selected
     public void RotateX()
     {
-        b_RotateX = true;
+        c_rotX.Execute(c_rotX, obj_selected.gameObject);
+        //b_RotateX = true;
     }
     public void RotateY()
     {
-        b_RotateY = true;
+        c_rotY.Execute(c_rotY, obj_selected.gameObject);
+        //b_RotateY = true;
     }
     public void RotateZ()
     {
-        b_RotateZ = true;
+        c_rotZ.Execute(c_rotZ, obj_selected.gameObject);
+        //b_RotateZ = true;
     }
-    
+
     //deletes currently selected object
     public void Delete()
     {
-        Destroy(obj_selected.gameObject);
+        c_del.Execute(c_del, obj_selected.gameObject);
     }
+
+
+
     //Move the selected
     public void DecreaseY()
     {
-        b_decreaseY = true;
+        c_decY.Execute(c_decY, obj_selected.gameObject);
+        //b_decreaseY = true;
     }
     public void IncreaseY()
     {
-        b_increaseY = true;
+        c_incY.Execute(c_incY, obj_selected.gameObject);
+        //b_increaseY = true;
     }
     public void DecreaseX()
     {
-        b_decreaseX = true;
+        c_decX.Execute(c_decX, obj_selected.gameObject);
+        //b_decreaseX = true;
     }
     public void IncreaseX()
     {
-        b_increaseX = true;
+        c_incX.Execute(c_incX, obj_selected.gameObject);
+        //b_increaseX = true;
     }
     public void DecreaseZ()
     {
-        b_decreaseZ = true;
+        c_decZ.Execute(c_decZ, obj_selected.gameObject);
+        //b_decreaseZ = true;
     }
     public void IncreaseZ()
     {
-        b_increaseZ = true;
+        c_incZ.Execute(c_incZ, obj_selected.gameObject);
+        //b_increaseZ = true;
     }
     public void Stop()
     {
-        b_increaseY = false;
-        b_decreaseY = false;
-        b_increaseX = false;
-        b_decreaseX = false;
-        b_increaseZ = false;
-        b_decreaseZ = false;
-        b_RotateX = false;
-        b_RotateY = false;
-        b_RotateZ = false;
+        //b_increaseY = false;
+        //b_decreaseY = false;
+        //b_increaseX = false;
+        //b_decreaseX = false;
+        //b_increaseZ = false;
+        //b_decreaseZ = false;
+        //b_RotateX = false;
+        //b_RotateY = false;
+        //b_RotateZ = false;
     }
 
     //void Start()

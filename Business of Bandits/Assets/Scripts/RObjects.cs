@@ -10,8 +10,6 @@ public class RObjects : MonoBehaviour
 
     public Factory s_factory;
 
-    // Start is called before the first frame update
-   
     //Spawns the objects
     public void SpawnCube()
     {
@@ -25,7 +23,5 @@ public class RObjects : MonoBehaviour
     {
         s_factory.FactorySpawn(obj_Cylinder);
     }
-
-    // Update is called once per frame
 
 }
