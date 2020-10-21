@@ -7,12 +7,7 @@ using UnityEngine.InputSystem;
 
 public class LvlEdit : MonoBehaviour
 {
-    enum States
-    {
-        S_Rotating,
-        S_Moving,
-        S_Nothing
-    }
+    
 
     //public LvlData Lvlscript;
     public Camera cam_MainCamera;
@@ -20,18 +15,7 @@ public class LvlEdit : MonoBehaviour
     public Transform obj_backup;
     public Renderer r_Selected;
 
-    private static LvlEdit s_Instance;
-    States e_currstate = States.S_Nothing;
-
-    public static LvlEdit Instance()
-    {
-        if (s_Instance == null)
-        {
-            s_Instance = new LvlEdit();
-        }
-            return s_Instance;
-    }
-       
+    
 
     public string str_previous;
     public float f_previousval;
@@ -107,18 +91,21 @@ public class LvlEdit : MonoBehaviour
 
     void Update()
     {
-        switch (e_currstate)
+        if (r_Selected != null)
         {
-            case States.S_Rotating:
-                r_Selected.material.color = Color.cyan;
-                break;
-            case States.S_Moving:
-                r_Selected.material.color = Color.blue;
-                break;
-            case States.S_Nothing:
-                r_Selected.material.color = Color.green;
-                break;
+            switch (StateMachine.Instance().e_currstate)
+            {
+                case StateMachine.States.S_Rotating:
+                    r_Selected.material.color = Color.cyan;
+                    break;
+                case StateMachine.States.S_Moving:
+                    r_Selected.material.color = Color.blue;
+                    break;
+                case StateMachine.States.S_Nothing:
+                    r_Selected.material.color = Color.green;
+                    break;
 
+            }
         }
         if (Input.GetMouseButtonDown(2))
         {
@@ -139,16 +126,19 @@ public class LvlEdit : MonoBehaviour
     //Rotates the selected
     public void RotateX()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Rotating;
         c_rotX.Execute(c_rotX, obj_selected.gameObject);
         //b_RotateX = true;
     }
     public void RotateY()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Rotating;
         c_rotY.Execute(c_rotY, obj_selected.gameObject);
         //b_RotateY = true;
     }
     public void RotateZ()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Rotating;
         c_rotZ.Execute(c_rotZ, obj_selected.gameObject);
         //b_RotateZ = true;
     }
@@ -164,36 +154,43 @@ public class LvlEdit : MonoBehaviour
     //Move the selected
     public void DecreaseY()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_decY.Execute(c_decY, obj_selected.gameObject);
         //b_decreaseY = true;
     }
     public void IncreaseY()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_incY.Execute(c_incY, obj_selected.gameObject);
         //b_increaseY = true;
     }
     public void DecreaseX()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_decX.Execute(c_decX, obj_selected.gameObject);
         //b_decreaseX = true;
     }
     public void IncreaseX()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_incX.Execute(c_incX, obj_selected.gameObject);
         //b_increaseX = true;
     }
     public void DecreaseZ()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_decZ.Execute(c_decZ, obj_selected.gameObject);
         //b_decreaseZ = true;
     }
     public void IncreaseZ()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Moving;
         c_incZ.Execute(c_incZ, obj_selected.gameObject);
         //b_increaseZ = true;
     }
     public void Stop()
     {
+        StateMachine.Instance().e_currstate = StateMachine.States.S_Nothing;
         //b_increaseY = false;
         //b_decreaseY = false;
         //b_increaseX = false;
